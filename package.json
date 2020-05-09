@@ -1,0 +1,16 @@
+{
+  "name": "covid-19-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "\u001b[AAn app that tracks current covid-19 cases\u001b[B",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.13"
+  }
+}
