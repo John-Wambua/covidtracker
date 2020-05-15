@@ -8,7 +8,7 @@ const app=express();
 
 app.use(express.static('public'))
 
-mongoose.connect('mongodb://localhost/covidtrackerDB',{useNewUrlParser: true,useUnifiedTopology:true});
+mongoose.connect('mongodb://localhost/covidtrackerDatabase',{useNewUrlParser: true,useUnifiedTopology:true});
 
 app.get('/',(req,res)=>{
     res.send('<h1>Hello!</h1>');
