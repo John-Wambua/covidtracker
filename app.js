@@ -2,6 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const https = require('https');
 const bodyParser=require('body-parser');
+const axios=require('axios');
 
 const port=3000;
 
@@ -11,124 +12,123 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(express.static('public'))
 
-mongoose.connect('mongodb://localhost/covidtrackerDB',{useNewUrlParser: true,useUnifiedTopology:true});
+mongoose.connect('mongodb://localhost/covidProject',{useNewUrlParser: true,useUnifiedTopology:true});
 
 const countrySchema=new mongoose.Schema({
-    reportDate:String,confirmedCases: Number,deaths: Number,recoveredCases: Number,activeCases: Number,recoveredCases:Number,activeCases:Number,confirmed_diff:Number,deaths_diff:Number,recovered_diff:Number,fatality_rate: Number,countryName: String,
+    country:String,totalConfirmed: Number,totalDeaths:Number,totalRecovered:Number,date:String
 });
 
-const Report=mongoose.model('Report',countrySchema);
+const Country=mongoose.model('Country',countrySchema);
 
-//
-// const today  = new Date().toISOString().split('T')[0];
-//
+const summaryURL=`https://api.covid19api.com//summary`;
 
-app.route('/reports/:countryName')
-    .get((req,res)=>{
-        Report.find({countryName:req.params.countryName},(err,foundReports)=>{
-            if(!err){
-                res.send(foundReports);
+//Overall Statistics
+app.get('/globalStatistics',(req,res)=>{
 
-            }else{
-                res.send(err);
-            }
+    axios.get(summaryURL)
+        .then(response => {
+            res.send(response.data.Global);
         })
-
-    })
-    .post((req,res)=>{
-
-        const reportDate=req.body.date;//'2020-05-15'
-        const country=req.params.countryName;
-
-        const url=`https://covid-api.com/api/reports?date=${reportDate}&region_name=${country}`;
-
-        https.get(url, (resp) => {
-            console.log('statusCode:', resp.statusCode);
-            // console.log('headers:', res.headers);
-
-            resp.on('data', (data) => {
-                // process.stdout.write(d);
-                const countryData=JSON.parse(data);
-
-                const countryReports={
-                    reportDate:countryData.data[0].date,
-                    confirmedCases:countryData.data[0].confirmed,
-                    deaths:countryData.data[0].deaths,
-                    recoveredCases:countryData.data[0].recovered,
-                    activeCases:countryData.data[0].active,
-                    confirmed_diff:countryData.data[0].confirmed_diff,
-                    deaths_diff:countryData.data[0].deaths_diff,
-                    recovered_diff:countryData.data[0].recovered_diff,
-                    fatality_rate:countryData.data[0].fatality_rate,
-                    countryName:countryData.data[0].region.name
-                }
-
-                // console.log(countryReports);
-
-                const country=new Report({
-                    reportDate:countryReports.reportDate,
-                    confirmedCases: countryReports.confirmedCases,
-                    deaths: countryReports.deaths,
-                    recoveredCases: countryReports.recoveredCases,
-                    activeCases: countryReports.activeCases,
-                    recoveredCases:countryReports.recovered_diff,
-                    activeCases:countryReports.activeCases,
-                    confirmed_diff:countryReports.confirmed_diff,
-                    deaths_diff:countryReports.deaths_diff,
-                    recovered_diff:countryReports.recovered_diff,
-                    fatality_rate: countryReports.fatality_rate,
-                    countryName: countryReports.countryName,
-                });
-
-                //Check if report with the set date already exists
-                Report.findOne({reportDate: reportDate,countryName:req.params.countryName}, function (error, foundReports){
-                    if(foundReports){
-                        // if(foundReports.countryName==country){
-                        //     res.send('Record already exists')
-                        // }else{
-                        //     country.save(err=>{
-                        //         if(!err){
-                        //             res.send('Successfully added entry')
-                        //         }else{
-                        //             res.send(err);
-                        //         }
-                        //     });
-                        //     }
-                        res.send('Record already exists!')
-                        // res.send(foundReports);
-                        }else{
-                        country.save(err=>{
-                            if(!err){
-                                res.send('Successfully added entry')
-                            }else{
-                                res.send(err);
-                            }
-                        });
-                        // res.send('No found reports!');
-                    }
-
-                });
-
-            });
-
-        }).on('error', (e) => {
-            console.error(e);
+        .catch(error => {
+            console.log(error);
         });
 
-    })
-    .delete((req,res)=>{
-        Report.deleteMany({countryName:req.params.countryName},err=>{
-            if(!err){
-                res.send('Successfully deleted all reports');
-            }else{
-                res.send(err);
+});
+
+//Statistics per Country
+app.get('/countryData',(req,res)=>{
+    Country.find({}, (err, foundItems)=> {
+        if(!err){
+            if(foundItems){
+                res.send(foundItems);
             }
+        }else{
+            res.send(err);
+        }
+    });
+
+    // saveCountryData();
+
+});
+
+//Historical data -- Line graph
+app.get('/historical/:countryName',(req,res)=>{
+
+    const countryName=req.params.countryName;
+    const histURL=`https://api.covid19api.com/total/dayone/country/${countryName}`;
+
+    axios.get(histURL)
+        .then(response => {
+            const result=response.data;
+            const final = {};
+            for (let key in result){
+                final[key] = {
+                    "Country" : result[key]["Country"],
+                    "Confirmed" : result[key]["Confirmed"],
+                    "Deaths" : result[key]["Deaths"],
+                    "Recovered" : result[key]["Recovered"],
+                    "Active": result[key]["Active"],
+                    "Date" : result[key]["Date"],
+                };
+            };
+            res.send(final)
         })
+        .catch(error => {
+            res.send(error);
+        });
+});
+
+app.get('/barData',(req,res)=>{
+
+    Country.find({country: {$in: ['Kenya', 'Uganda','Tanzania, United Republic of','Rwanda','Burundi']}},(err,foundItems)=>{
+        if(!err){
+            if(foundItems){
+                res.send(foundItems)
+            }
+        }else{
+            res.send(err);
+        }
     })
 
-const saveCountryData=(country,res)=>{
+});
 
+const saveCountryData=()=>{
+    axios.get(summaryURL)
+        .then(response => {
+            response.data.Countries.forEach(country=>{
+                const summary=new Country({
+                    country:country.Country,
+                    totalConfirmed: country.TotalConfirmed,
+                    totalDeaths:country.TotalDeaths,
+                    totalRecovered:country.TotalConfirmed,
+                    date:country.Date,
+                });
+
+                Country.find({ date:country.Date}, (err, foundCases) =>{
+                    if(foundCases){
+                        console.log('Records are up to date')
+                    }else{
+                        summary.save(err=>{
+                            if(err){
+                                console.log(err)
+                            }else{
+                                console.log("Records inserted successfully!");
+                            }
+                        });
+                    }
+                });
+
+            })
+        })
+        .catch(error => {
+            console.log(error);
+        });
 }
+
+// setInterval(()=>{
+//     saveCountryData();
+// },20000)
+
 
 
 
