@@ -4,7 +4,6 @@ const https = require('https');
 const bodyParser=require('body-parser');
 const axios=require('axios');
 
-const port=3000;
 
 const app=express();
 
@@ -12,7 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(express.static('public'))
 
-mongoose.connect('mongodb://localhost/covidProject',{useNewUrlParser: true,useUnifiedTopology:true});
+mongoose.connect('mongodb+srv://admin-jwambua:9d15rmbVXSN6KYXY@covidproject-weksp.mongodb.net/covidProject',{useNewUrlParser: true,useUnifiedTopology:true});
 
 const countrySchema=new mongoose.Schema({
     country:String,totalConfirmed: Number,totalDeaths:Number,totalRecovered:Number,date:String
@@ -37,6 +36,7 @@ app.get('/globalStatistics',(req,res)=>{
 
 //Statistics per Country
 app.get('/countryData',(req,res)=>{
+
     Country.find({}, (err, foundItems)=> {
         if(!err){
             if(foundItems){
@@ -47,7 +47,7 @@ app.get('/countryData',(req,res)=>{
         }
     });
 
-    // saveCountryData();
+// saveCountryData();
 
 });
 
@@ -108,15 +108,17 @@ const saveCountryData=()=>{
                     if(foundCases){
                         console.log('Records are up to date')
                     }else{
-                        summary.save(err=>{
-                            if(err){
-                                console.log(err)
-                            }else{
-                                console.log("Records inserted successfully!");
-                            }
-                        });
+                      summary.save(err=>{
+                                 if(err){
+                                     console.log(err)
+                                 }else{
+                                     console.log("Records inserted successfully!");
+                                 }
+                             });
                     }
                 });
+
+
 
             })
         })
@@ -129,7 +131,10 @@ const saveCountryData=()=>{
 //     saveCountryData();
 // },20000)
 
-
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
 
 
 app.listen(port,()=>{
