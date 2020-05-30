@@ -104,19 +104,26 @@ const saveCountryData=()=>{
                     date:country.Date,
                 });
 
-                Country.find({ date:country.Date}, (err, foundCases) =>{
-                    if(foundCases){
-                        console.log('Records are up to date')
-                    }else{
-                      summary.save(err=>{
-                                 if(err){
-                                     console.log(err)
-                                 }else{
-                                     console.log("Records inserted successfully!");
-                                 }
-                             });
-                    }
-                });
+                // Country.find({ date:country.Date}, (err, foundCases) =>{
+                //     if(foundCases){
+                //         console.log('Records are up to date')
+                //     }else{
+                //       summary.save(err=>{
+                //                  if(err){
+                //                      console.log(err)
+                //                  }else{
+                //                      console.log("Records inserted successfully!");
+                //                  }
+                //              });
+                //     }
+                // });
+                summary.save(err=>{
+                     if(err){
+                         console.log(err)
+                     }else{
+                         console.log("Records inserted successfully!");
+                     }
+                 });
 
 
 
