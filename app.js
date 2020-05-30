@@ -100,7 +100,7 @@ const saveCountryData=()=>{
                     country:country.Country,
                     totalConfirmed: country.TotalConfirmed,
                     totalDeaths:country.TotalDeaths,
-                    totalRecovered:country.TotalConfirmed,
+                    totalRecovered:country.TotalRecovered,
                     date:country.Date,
                 });
 
@@ -127,9 +127,19 @@ const saveCountryData=()=>{
         });
 }
 
-// setInterval(()=>{
-//     saveCountryData();
-// },20000)
+const updateDB=()=>{
+    Country.deleteMany({}, (err)=>{
+        if(err){
+            console.log(err);
+        }else {
+            saveCountryData();
+        }
+    });
+}
+
+setInterval(()=>{
+    updateDB();
+},20000)
 
 let port = process.env.PORT;
 if (port == null || port == "") {
