@@ -3,6 +3,7 @@ const mongoose=require('mongoose');
 const https = require('https');
 const bodyParser=require('body-parser');
 const axios=require('axios');
+const cron=require('node-cron');
 
 
 const app=express();
@@ -104,19 +105,6 @@ const saveCountryData=()=>{
                     date:country.Date,
                 });
 
-                // Country.find({ date:country.Date}, (err, foundCases) =>{
-                //     if(foundCases){
-                //         console.log('Records are up to date')
-                //     }else{
-                //       summary.save(err=>{
-                //                  if(err){
-                //                      console.log(err)
-                //                  }else{
-                //                      console.log("Records inserted successfully!");
-                //                  }
-                //              });
-                //     }
-                // });
                 summary.save(err=>{
                      if(err){
                          console.log(err)
@@ -144,9 +132,9 @@ const updateDB=()=>{
     });
 }
 
-setInterval(()=>{
-    updateDB();
-},20000)
+cron.schedule('00 00 10 * * 0-7', () => {
+   updateDB();
+});
 
 let port = process.env.PORT;
 if (port == null || port == "") {
