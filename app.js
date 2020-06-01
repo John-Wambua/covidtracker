@@ -60,19 +60,17 @@ app.get('/historical/:countryName',(req,res)=>{
 
     axios.get(histURL)
         .then(response => {
-            const result=response.data;
-            const final = {};
-            for (let key in result){
-                final[key] = {
-                    "Country" : result[key]["Country"],
-                    "Confirmed" : result[key]["Confirmed"],
-                    "Deaths" : result[key]["Deaths"],
-                    "Recovered" : result[key]["Recovered"],
-                    "Active": result[key]["Active"],
-                    "Date" : result[key]["Date"],
-                };
-            };
-            res.send(final)
+            let result=response.data;
+           
+            for(let i = 0; i < result.length; i++) {
+                delete result[i]['CountryCode'];
+                delete result[i]['Province'];
+                delete result[i]['City'];
+                delete result[i]['CityCode'];
+                delete result[i]['Lat'];
+                delete result[i]['Lon'];
+            }
+            res.send(result);
         })
         .catch(error => {
             res.send(error);
