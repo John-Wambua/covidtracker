@@ -10,7 +10,7 @@ module.exports=()=>{
 
     winston.add(new winston.transports.File({filename:'logfile.log'}))
     winston.add(new winston.transports.MongoDB({
-        db:process.env.MONGO_URI,
+        db:'mongodb://localhost/covidProject',
         options:{
             useUnifiedTopology:true
         }
