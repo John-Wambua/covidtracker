@@ -4,6 +4,7 @@ const historical=require('../routes/historicalData');
 const global=require('../routes/globalStats');
 const country=require('../routes/countries');
 const barData=require('../routes/barData');
+const continents=require('../routes/continents')
 const error=require('../middleware/error');
 
 module.exports=app=>{
@@ -12,5 +13,6 @@ module.exports=app=>{
     app.use('/api/globalStatistics',global);
     app.use('/api/countryData',country);
     app.use('/api/barData',barData);
+    app.use('/api/continents',continents);
     app.use(error);
 }
