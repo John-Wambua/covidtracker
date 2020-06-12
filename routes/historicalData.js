@@ -3,7 +3,7 @@ const router=express.Router();
 const axios=require('axios');
 
 // Line graph
-router.get('/:countryName',(req,res)=>{
+router.get('/:countryName',(req,res,next)=>{
 
     const countryName=req.params.countryName;
     const histURL=`https://api.covid19api.com/total/dayone/country/${countryName}`;
@@ -23,7 +23,7 @@ router.get('/:countryName',(req,res)=>{
             res.send(result);
         })
         .catch(error => {
-            res.send(error);
+            next(error);
         });
 });
 module.exports=router;

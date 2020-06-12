@@ -3,16 +3,15 @@ const router=express.Router();
 const {Country}=require('../models/Country')
 
 //Statistics per Country
-router.get('/',(req,res)=>{
+router.get('/',(req,res,next)=>{
 
     Country.find({}, (err, foundItems)=> {
-        if(!err){
-            if(foundItems){
-                res.send(foundItems);
-            }
-        }else{
-            res.send(err);
-        }
+
+        if (err) return next(err);
+        if(!foundItems) return res.status(404).send('Not found');
+
+        res.send(foundItems);
+
     });
 });
 

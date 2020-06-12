@@ -5,14 +5,14 @@ const axios=require('axios');
 const summaryURL=`https://api.covid19api.com//summary`;
 
 //Overall Statistics
-router.get('/',(req,res)=>{
+router.get('/',(req,res,next)=>{
 
     axios.get(summaryURL)
         .then(response => {
             res.send(response.data.Global);
         })
         .catch(error => {
-            console.log(error);
+            next(error);
         });
 
 });
