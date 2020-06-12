@@ -1,5 +1,6 @@
 const mongoose=require('mongoose');
 require('dotenv').config()
+const winston=require('winston')
 
 module.exports=()=>{
     try{
@@ -10,6 +11,7 @@ module.exports=()=>{
             });
     }catch (e) {
         winston.error('Problem with mongodb connection string',e);
+        console.log(e);
     }
 
 }
