@@ -25,7 +25,7 @@ const saveCountryData=()=>{
             console.log(error);
         });
 }
-module.exports=()=>{
+const update=()=>{
     Country.deleteMany({}, (err)=>{
         if (err){
             winston.error(err.message,err)
@@ -34,3 +34,4 @@ module.exports=()=>{
         saveCountryData();
     });
 }
+update();
