@@ -1,5 +1,6 @@
 const express=require('express');
 const helmet=require('helmet');
+const morgan=require('morgan');
 const historical=require('../routes/historicalData');
 const global=require('../routes/globalStats');
 const country=require('../routes/countries');
@@ -9,6 +10,7 @@ const error=require('../middleware/error');
 
 module.exports=app=>{
     app.use(helmet());
+    app.use(morgan('tiny'));
     app.use('/api/historical',historical);
     app.use('/api/globalStatistics',global);
     app.use('/api/countryData',country);

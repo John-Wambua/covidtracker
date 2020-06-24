@@ -19,6 +19,7 @@
     "helmet": "^3.22.0",
     "lodash": "^4.17.15",
     "mongoose": "^5.9.13",
+    "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
     "node-schedule": "^1.3.2",
     "request": "^2.88.2",
