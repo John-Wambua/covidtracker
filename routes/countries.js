@@ -1,25 +1,14 @@
 const express=require('express');
 const router=express.Router();
-const {Country}=require('../models/Country')
-const update=require('../startup/updateDB')
+const {allCountries}=require('../controllers/countryController')
+const {aliasTopConfirmed}=require('../middleware/aliasTopConfirmed')
+const {aliasTopRecovered}=require('../middleware/aliasTopRecovered')
+const {aliasTopDeaths}=require('../middleware/aliasTopDeaths')
 
-//Statistics per Country
-router.get('/',(req,res,next)=>{
 
-    // update();
-    Country.find({}, (err, countries)=> {
-
-        if (err) return next(err);
-        if(!countries) return res.status(404).send('Not found');
-
-        res.status(200).json({
-            status:"success",
-            data:{
-                countries
-            }
-        })
-
-    });
-});
+router.get('/top-10-confirmed',aliasTopConfirmed,allCountries);
+router.get('/top-10-recovered',aliasTopRecovered,allCountries);
+router.get('/top-10-deaths',aliasTopDeaths,allCountries);
+router.get('/',allCountries);
 
 module.exports=router;
