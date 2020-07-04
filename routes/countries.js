@@ -7,12 +7,17 @@ const update=require('../startup/updateDB')
 router.get('/',(req,res,next)=>{
 
     // update();
-    Country.find({}, (err, foundItems)=> {
+    Country.find({}, (err, countries)=> {
 
         if (err) return next(err);
-        if(!foundItems) return res.status(404).send('Not found');
+        if(!countries) return res.status(404).send('Not found');
 
-        res.send(foundItems);
+        res.status(200).json({
+            status:"success",
+            data:{
+                countries
+            }
+        })
 
     });
 });

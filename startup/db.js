@@ -9,6 +9,7 @@ module.exports=()=>{
                 useNewUrlParser: true,
                 useUnifiedTopology:true
             });
+        winston.info('Database Connected successfully')
     }catch (e) {
         winston.error('Problem with mongodb connection string',e);
         console.log(e);

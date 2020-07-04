@@ -7,6 +7,7 @@ const Europe={$in: ['Albania','Andorra','Armenia','Austria','Azerbaijan','Belaru
 const Asia={$in: ['Afghanistan','Armenia','Azerbaijan','Bahrain','Bangladesh','Bhutan','Brunei Darussalam', 'Cambodia','China','Cyprus','Georgia','India','Indonesia','Iran, Islamic Republic of','Iraq','Israel', 'Japan','Jordan','Kazakhstan','Korea (South)','Kuwait','Kyrgyzstan','Lao PDR','Lebanon','Malaysia','Maldives','Mongolia','Myanmar','Nepal','North Korea','Oman','Pakistan','Palestinian Territory','Philippines','Qatar','Russian Federation','Saudi Arabia','Singapore','Sri Lanka','Syrian Arab Republic (Syria)','Taiwan, Republic of China','Tajikistan','Thailand','TimorLeste','Turkey','Turkmenistan','United Arab Emirates','Uzbekistan','Viet Nam','Yemen']}
 const NorthAmerica={$in: ['Antigua and Barbuda','Bahamas','Barbados','Belize','Canada','Costa Rica','Cuba','Dominica','Dominican Republic','El Salvador','Grenada','Guatemala','Haiti','Honduras','Jamaica','Mexico','Nicaragua','Panama','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and Grenadines','Trinidad and Tobago','United States of America']}
 const SouthAmerica={$in: ['Argentina', 'Bolivia','Brazil','Chile','Colombia','Ecuador','Guyana','Paraguay','Peru','Suriname','Uruguay','Venezuela (Bolivarian Republic)']}
+const Oceania={$in: ['Australia','Fiji','Kiribati','New Zealand','Papua New Guinea','Samoa','Solomon Islands','Tonga']}
 
 router.get('/:continent',(req,res,next)=>{
     const continent=req.params.continent;
@@ -16,6 +17,7 @@ router.get('/:continent',(req,res,next)=>{
     else if (continent==='Asia') input=Asia;
     else if (continent==='NorthAmerica') input=NorthAmerica;
     else if (continent==='SouthAmerica') input=SouthAmerica;
+    else if (continent==='Oceania') input=Oceania;
 
     Country.find({country:input},(err,countries)=>{
         if(err) next(err)
