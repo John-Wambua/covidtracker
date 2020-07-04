@@ -7,7 +7,7 @@ exports.getBarData=(req,res,next)=>{
         if(!countries) return res.status(404).send('Not found');
 
         res.status(200).json({
-            status:"Success",
+            status:"success",
             results:countries.length,
             data:{
                 countries

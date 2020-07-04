@@ -21,7 +21,7 @@ exports.displayContinents=(req,res,next)=>{
         if(err) next(err)
         if (!countries) return res.status(404).send('No countries found');
         res.status(200).json({
-            status:"Success",
+            status:"success",
             results:countries.length,
             data:{
                 countries

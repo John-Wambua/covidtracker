@@ -35,7 +35,7 @@ exports.allCountries=(req,res,next)=>{
     }
 
     //4. PAGINATION
-    const page=req.query.page*1||1;
+    let page=req.query.page*1||1;
     const limit=req.query.limit*1||100;
     //page=2&limit=10 page 1= 1-10, page 2=11-20
     const skip=(page-1)*limit;
@@ -46,7 +46,7 @@ exports.allCountries=(req,res,next)=>{
         totalPages=Math.ceil(totalCountries/limit);
 
 
-        if (req.query.page) if (page>totalPages)  return  next(new Error('Page exceeds page limit'));
+        if (req.query.page) if (page>totalPages)  return  next(new Error('Page exceeds limit'));
 
         query=query.skip(skip).limit(limit);
 
