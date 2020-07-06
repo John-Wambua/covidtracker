@@ -1,6 +1,6 @@
 const axios=require('axios');
 
-const summaryURL=`https://api.covid19api.com//summary`;
+const summaryURL=`https://api.covid19api.com/summary`;
 
 exports.getGlobalStats=(req,res,next)=>{
 

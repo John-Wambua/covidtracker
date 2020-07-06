@@ -2,7 +2,7 @@ const axios=require('axios');
 const {Country}=require('../models/Country');
 const winston=require('winston');
 
-const summaryURL=`https://api.covid19api.com//summary`;
+const summaryURL=`https://api.covid19api.com/summary`;
 const saveCountryData=()=>{
     axios.get(summaryURL)
         .then(response => {
