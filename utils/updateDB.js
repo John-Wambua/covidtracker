@@ -1,6 +1,5 @@
 const axios=require('axios');
 const {Country}=require('../models/Country');
-const winston=require('winston');
 
 const summaryURL=`https://api.covid19api.com/summary`;
 const saveCountryData=()=>{
@@ -14,10 +13,11 @@ const saveCountryData=()=>{
                     totalRecovered:country.TotalRecovered,
                     date:country.Date,
                 });
+                console.log(summary)
 
                 summary.save(err=>{
-                    if (err) return err
-                    // res.send('Inserted ')
+                    if (err) return console.log(err)
+                    // console.log('Data updated Successfully')
                 });
             })
         })
@@ -28,7 +28,7 @@ const saveCountryData=()=>{
 const update=()=>{
     Country.deleteMany({}, (err)=>{
         if (err){
-            winston.error(err.message,err)
+            console.log(err.message,err)
             return res.status(500).send('Error updating db')
         }
         saveCountryData();

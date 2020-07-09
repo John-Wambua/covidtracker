@@ -1,18 +1,36 @@
 const express=require('express');
-const winston=require('winston')
+const morgan=require('morgan');
+
+const ErrorHandler=require('./utils/errorHandler')
+const globalErrorHandler=require('./middleware/globalErrorHandler');
+
+const historical=require('./routes/historicalData');
+const global=require('./routes/globalStats');
+const country=require('./routes/countries');
+const barData=require('./routes/barData');
+const continents=require('./routes/continents')
+
+
 const app=express();
 
-require('./startup/logging')();
-require('./startup/routes')(app);
-require('./startup/db')();
-
-
-
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000;
+//MIDDLEWARE
+if (process.env.NODE_ENV==='development'){
+    app.use(morgan('dev'));
 }
 
-app.listen(port,()=>{
-    winston.info(`Server is running on port ${port}`);
+//ROUTES
+app.use('/api/historical',historical);
+app.use('/api/globalStatistics',global);
+app.use('/api/countryData',country);
+app.use('/api/barData',barData);
+app.use('/api/continents',continents);
+
+app.all('*',(req,res,next)=>{
+    next(new ErrorHandler(`Cannot find ${req.originalUrl} on this server!`,404))
 })
+
+app.use(globalErrorHandler);
+
+module.exports=app;
+
+
