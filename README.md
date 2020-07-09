@@ -1,4 +1,4 @@
 # covid-19-tracker
 Node.js backend server for tracking covid-19 cases.
-## Motivation
-Show growing covid-19 trends in Kenya using visualizations.
+## About
+Shows covid-19 cases distribution globally, regionally within the continents and in individual countries.
