@@ -7,16 +7,18 @@ const countrySchema=new mongoose.Schema({
     toJSON: { virtuals: true }
 });
 countrySchema.virtual('recoveryRate').get(function () {
-    return (this.totalRecovered/this.totalConfirmed)*100;
+    const recoveryRate=(this.totalRecovered/this.totalConfirmed)*100;
+
+    return Math.round((recoveryRate + Number.EPSILON) * 100) / 100
 })
 countrySchema.virtual('deathRate').get(function () {
-    return (this.totalDeaths/this.totalConfirmed)*100;
+    const deathRate=(this.totalDeaths/this.totalConfirmed)*100;
+    return Math.round((deathRate + Number.EPSILON) * 100) / 100
 })
 
 //DOCUMENT MIDDLEWARE
 countrySchema.pre('save',function(next) {
-// tourSchema.pre('find',function(next) {
-//   this.date=new Date(this.date);
+
     this.date=this.date.substring(0, 10);
     next();
 })

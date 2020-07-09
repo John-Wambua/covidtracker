@@ -13,7 +13,6 @@ const saveCountryData=()=>{
                     totalRecovered:country.TotalRecovered,
                     date:country.Date,
                 });
-                console.log(summary)
 
                 summary.save(err=>{
                     if (err) return console.log(err)
