@@ -2,7 +2,7 @@ const {Country}=require('../models/Country')
 const ApiFeatures=require('../utils/apiFeatures')
 const update=require('../utils/updateDB')
 
-exports.allCountries=(req,res,next)=>{
+exports.getCountriesData=(req,res,next)=>{
     // update();
     const features=new ApiFeatures(Country.find(),req.query);
     features

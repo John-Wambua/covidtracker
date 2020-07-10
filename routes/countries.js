@@ -1,16 +1,7 @@
 const express=require('express');
 const router=express.Router();
-const {allCountries}=require('../controllers/countryController')
-const {monthlyStats}=require('../controllers/countryController')
-const {aliasTopConfirmed}=require('../middleware/aliasTopConfirmed')
-const {aliasTopRecovered}=require('../middleware/aliasTopRecovered')
-const {aliasTopDeaths}=require('../middleware/aliasTopDeaths')
+const {getAvailableCountries}=require('../controllers/allCountriesController')
 
-
-router.get('/top-10-confirmed',aliasTopConfirmed,allCountries);
-router.get('/top-10-recovered',aliasTopRecovered,allCountries);
-router.get('/top-10-deaths',aliasTopDeaths,allCountries);
-router.get('/',allCountries);
-router.get('/monthly-stats/:year',monthlyStats)
-
+//Available Countries
+router.get('/',getAvailableCountries);
 module.exports=router;

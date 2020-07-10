@@ -2,9 +2,14 @@ const mongoose=require('mongoose');
 
 
 const countrySchema=new mongoose.Schema({
-    country:String,totalConfirmed: Number,totalDeaths:Number,totalRecovered:Number,date:String
+    country:String,
+    totalConfirmed: Number,
+    totalDeaths:Number,
+    totalRecovered:Number,
+    date:String
 },{
-    toJSON: { virtuals: true }
+    toJSON: { virtuals: true },
+    id:false,
 });
 countrySchema.virtual('recoveryRate').get(function () {
     const recoveryRate=(this.totalRecovered/this.totalConfirmed)*100;

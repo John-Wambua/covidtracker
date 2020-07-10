@@ -39,7 +39,7 @@ class ApiFeatures{
             const fields=this.queryString.fields.split(',').join(' ');
             this.query=this.query.select(fields);
         }else{
-            this.query=this.query.select('-__v -id');
+            this.query=this.query.select('-__v -_id');
         }
         return this;
     }
@@ -51,15 +51,6 @@ class ApiFeatures{
         const skip=(this.page-1)*limit;
 
 
-        // Country.countDocuments({},(error,totalCountries)=>{
-        //     if (error) return this.res.send(error)
-        //     let totalPages=Math.ceil(totalCountries/limit);
-        //
-        //
-        //    if (this.page>totalPages) return this.res.json({status: "fail",message:"Page exceeds limit"});
-        //    //  if (this.page>totalPages)  return  console.log('Page exceeds limit');
-        //
-        // })
         this.query=this.query.skip(skip).limit(limit);
         return this;
 

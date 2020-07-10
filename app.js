@@ -6,9 +6,10 @@ const globalErrorHandler=require('./middleware/globalErrorHandler');
 
 const historical=require('./routes/historicalData');
 const global=require('./routes/globalStats');
-const country=require('./routes/countries');
+const countryData=require('./routes/countriesData');
 const barData=require('./routes/barData');
-const continents=require('./routes/continents')
+const continents=require('./routes/continents');
+const allCountries=require('./routes/countries');
 
 
 const app=express();
@@ -21,9 +22,10 @@ if (process.env.NODE_ENV==='development'){
 //ROUTES
 app.use('/api/historical',historical);
 app.use('/api/globalStatistics',global);
-app.use('/api/countryData',country);
+app.use('/api/countryData',countryData);
 app.use('/api/barData',barData);
 app.use('/api/continents',continents);
+app.use('/api/countries',allCountries);
 
 app.all('*',(req,res,next)=>{
     next(new ErrorHandler(`Cannot find ${req.originalUrl} on this server!`,404))
