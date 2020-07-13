@@ -1,6 +1,6 @@
 const {Country}=require('../models/Country')
 const ApiFeatures=require('../utils/apiFeatures')
-const update=require('../utils/updateDB')
+const _=require('lodash')
 
 exports.getCountriesData=(req,res,next)=>{
     // update();
@@ -17,7 +17,7 @@ exports.getCountriesData=(req,res,next)=>{
             page:features.page,
             results:countries.length,
             data:{
-                countries
+                countries:_.map(countries, _.partialRight(_.pick, ['country', 'totalConfirmed', 'totalDeaths', 'totalRecovered', 'deathRate','recoveryRate','date']))
             }
         })
     });
