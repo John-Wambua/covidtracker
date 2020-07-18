@@ -1,6 +1,7 @@
 const {Country}=require('../models/Country')
 const ApiFeatures=require('../utils/apiFeatures')
 const _=require('lodash')
+// const update=require('../utils/updateDB')
 
 exports.getCountriesData=(req,res,next)=>{
     // update();

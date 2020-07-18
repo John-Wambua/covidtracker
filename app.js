@@ -1,5 +1,8 @@
 const express=require('express');
 const morgan=require('morgan');
+const hpp=require('hpp');
+const helmet=require('helmet')
+const xss=require('xss-clean')
 
 const ErrorHandler=require('./utils/errorHandler')
 const globalErrorHandler=require('./middleware/globalErrorHandler');
@@ -15,9 +18,15 @@ const allCountries=require('./routes/countries');
 const app=express();
 
 //MIDDLEWARE
+//Set HTTP security headers
+app.use(helmet())
 if (process.env.NODE_ENV==='development'){
     app.use(morgan('dev'));
 }
+//Data sanitization against XSS
+app.use(xss())
+//prevent parameter pollution
+app.use(hpp())
 
 //ROUTES
 app.use('/api/historical',historical);

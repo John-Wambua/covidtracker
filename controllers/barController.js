@@ -1,5 +1,6 @@
 const {Country}=require('../models/Country')
 const ApiFeatures=require('../utils/apiFeatures')
+const _=require('lodash')
 
 exports.getBarData=(req,res,next)=>{
 
@@ -16,7 +17,7 @@ exports.getBarData=(req,res,next)=>{
             status:"success",
             results:countries.length,
             data:{
-                countries
+                countries:_.map(countries, _.partialRight(_.pick, ['country', 'totalConfirmed', 'totalDeaths', 'totalRecovered', 'deathRate','recoveryRate','date']))
             }
         })
     })

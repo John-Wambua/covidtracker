@@ -7,6 +7,12 @@ process.on('uncaughtException',err=>{
     process.exit(1)
 
 })
+process.on('uncaughtRejection',err=>{
+    console.log('Uncaught Promise Rejection...📌');
+    console.log(err);
+    process.exit(1)
+
+})
 const app=require('./app')
 
 mongoose.connect(process.env.MONGO_URI,
