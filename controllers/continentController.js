@@ -10,11 +10,25 @@ const NorthAmerica={$in: ['Antigua and Barbuda','Bahamas','Barbados','Belize','C
 const SouthAmerica={$in: ['Argentina', 'Bolivia','Brazil','Chile','Colombia','Ecuador','Guyana','Paraguay','Peru','Suriname','Uruguay','Venezuela (Bolivarian Republic)']}
 const Oceania={$in: ['Australia','Fiji','Kiribati','New Zealand','Papua New Guinea','Samoa','Solomon Islands','Tonga']}
 
-exports.displayContinents=(req,res,next)=>{
+exports.showContinents=(req,res,next)=>{
+    res.status(200).json({
+        status:'success',
+        data:{
+            continents:[
+                {Continent:'Africa', Slug:'africa', CamelCase:'africa',},
+                {Continent:'Europe', Slug:'europe', CamelCase:'europe',},
+                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica',},
+                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica',},
+                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania'},
+            ]
+        }
+    })
+}
+exports.displayContinentData=(req,res,next)=>{
 
     const features=new ApiFeatures(Country.find(),req.query)
     const continent=_.camelCase(req.params.continent);
-    console.log(continent)
+
     let input;
     if (continent==='africa') input=Africa;
     else if (continent==='europe') input=Europe;
@@ -37,6 +51,7 @@ exports.displayContinents=(req,res,next)=>{
         res.status(200).json({
             status:"success",
             results:countries.length,
+            continent:_.upperCase(req.params.continent),
             data:{
                 countries
             }

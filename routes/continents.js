@@ -1,7 +1,7 @@
 const express=require('express');
 const router=express.Router();
-const{displayContinents}=require('../controllers/continentController');
+const{displayContinentData,showContinents}=require('../controllers/continentController');
 
-
-router.get('/:continent',displayContinents);
+router.get('/',showContinents)
+router.get('/:continent',displayContinentData);
 module.exports=router;
