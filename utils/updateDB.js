@@ -1,37 +1,50 @@
 const axios=require('axios');
 const {Country}=require('../models/Country');
+const mongoose=require('mongoose')
+require('dotenv').config();
 
+
+mongoose.connect(process.env.MONGO_URI,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+    useFindAndModify:false,
+    useCreateIndex:true
+},err=>{
+    if (err) return console.log('Could not connect to DB');
+    console.log('Database Connected Successfully');
+})
 const summaryURL=`https://api.covid19api.com/summary`;
-const saveCountryData=()=>{
-    axios.get(summaryURL)
-        .then(response => {
-            response.data.Countries.forEach(country=>{
-                const summary=new Country({
-                    country:country.Country,
+const saveCountryData=async ()=>{
+    try {
+        const response = await axios.get(summaryURL)
+        await Promise.all(
+            response.data.Countries.map(async country => {
+                const summary = new Country({
+                    country: country.Country,
                     totalConfirmed: country.TotalConfirmed,
-                    totalDeaths:country.TotalDeaths,
-                    totalRecovered:country.TotalRecovered,
-                    date:country.Date,
+                    totalDeaths: country.TotalDeaths,
+                    totalRecovered: country.TotalRecovered,
+                    date: country.Date,
                 });
 
-                summary.save(err=>{
-                    if (err) return console.log(err)
-                    // console.log('Data updated Successfully')
-                });
+                await summary.save();
             })
-        })
-        .catch(error => {
-            console.log(error);
-        });
+        );
+    }catch (e) {
+        console.log(e)
+    }
+
 }
-const update=()=>{
-    Country.deleteMany({}, (err)=>{
-        if (err){
-            console.log(err.message,err)
-            return res.status(500).send('Error updating db')
-        }
-        saveCountryData();
-    });
+const updateData= async ()=>{
+    try {
+        await Country.deleteMany({});
+        await saveCountryData();
+        console.log('Data updated successfully')
+        process.exit();
+    }catch (e) {
+        console.log(e)
+    }
+
 }
-update();
+updateData();
 // module.exports=update;
