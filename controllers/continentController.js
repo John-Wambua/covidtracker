@@ -1,6 +1,7 @@
 const {Country}=require('../models/Country');
 const ErrorHandler=require('../utils/errorHandler');
 const ApiFeatures=require('../utils/apiFeatures');
+const catchAsync=require('../utils/catchAsync');
 const _=require('lodash');
 
 const Africa = { $in: ['Algeria','Angola','Benin','Botswana','Burkina Faso','Burundi','Cape Verde','Cameroon','Central African Republic','Chad','Comoros','Congo (Brazzaville)','Congo (Kinshasa)','Cote d\'Ivoire','Djibouti','Egypt','Equatorial Guinea','Eritrea','Ethiopia','Gabon','Gambia','Ghana','Guinea','Guinea-Bissau','Kenya','Lesotho','Liberia','Libya','Madagascar','Malawi','Mali','Mauritania','Mauritius','Morocco','Mozambique','Namibia','Niger','Nigeria','Rwanda','Sao Tome and Principe','Senegal','Seychelles','Sierra Leone','Somalia','South Africa','South Sudan','Sudan','Swaziland','Tanzania, United Republic of','Togo','Tunisia','Uganda','Western Sahara','Zambia','Zimbabwe']}
@@ -10,20 +11,50 @@ const NorthAmerica={$in: ['Antigua and Barbuda','Bahamas','Barbados','Belize','C
 const SouthAmerica={$in: ['Argentina', 'Bolivia','Brazil','Chile','Colombia','Ecuador','Guyana','Paraguay','Peru','Suriname','Uruguay','Venezuela (Bolivarian Republic)']}
 const Oceania={$in: ['Australia','Fiji','Kiribati','New Zealand','Papua New Guinea','Samoa','Solomon Islands','Tonga']}
 
-exports.showContinents=(req,res,next)=>{
+
+
+
+exports.showContinents=catchAsync(async (req,res,next)=>{
+
+    const africaData= await Country.aggregate([
+        {$match:{country:Africa}},
+        {$group:{_id:'Africa', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
+    ]);
+    const euroData= await Country.aggregate([
+        {$match:{country:Europe}},
+        {$group:{_id:'Europe', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
+    ]);
+    const asiaData= await Country.aggregate([
+        {$match:{country:Asia}},
+        {$group:{_id:'Asia', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
+    ]);
+    const nAData= await Country.aggregate([
+        {$match:{country:NorthAmerica}},
+        {$group:{_id:'North America', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
+    ]);
+    const sAData= await Country.aggregate([
+        {$match:{country:SouthAmerica}},
+        {$group:{_id:'South America', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
+    ]);
+    const oceaniaData= await Country.aggregate([
+        {$match:{country:Oceania}},
+        {$group:{_id:'Oceania', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
+    ]);
     res.status(200).json({
         status:'success',
+        results:6,
         data:{
             continents:[
-                {Continent:'Africa', Slug:'africa', CamelCase:'africa',},
-                {Continent:'Europe', Slug:'europe', CamelCase:'europe',},
-                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica',},
-                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica',},
-                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania'},
+                {Continent:'Africa', Slug:'africa', CamelCase:'africa',totals:africaData},
+                {Continent:'Asia', Slug:'asia', CamelCase:'asia',totals:asiaData},
+                {Continent:'Europe', Slug:'europe', CamelCase:'europe',totals:euroData},
+                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica',totals:nAData},
+                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica',totals:sAData},
+                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania',totals:oceaniaData},
             ]
         }
     })
-}
+})
 exports.displayContinentData=(req,res,next)=>{
 
     const features=new ApiFeatures(Country.find(),req.query)
