@@ -96,8 +96,8 @@ exports.displayContinentData=catchAsync(async (req,res,next)=>{
             status:"success",
             results:countries.length,
             continent:_.upperCase(req.params.continent),
-            totals:totals[0],
             data:{
+                totals:totals[0],
                 countries
             }
         })
