@@ -12,45 +12,54 @@ const SouthAmerica={$in: ['Argentina', 'Bolivia','Brazil','Chile','Colombia','Ec
 const Oceania={$in: ['Australia','Fiji','Kiribati','New Zealand','Papua New Guinea','Samoa','Solomon Islands','Tonga']}
 
 
+const continentTotals=async (continent,next)=>{
+    try {
+        const totals = await Country.aggregate([
+            {$match: {country: continent}},
+            {
+                $group: {
+                    _id: null,
+                    totalConfirmed: {$sum: '$totalConfirmed'},
+                    totalRecoveries: {$sum: '$totalRecovered'},
+                    totalDeaths: {$sum: '$totalDeaths'},
+                }
+            }
+        ]);
+        return totals;
+    }catch (e) {
+        next(e);
+    }
+}
 
+const displayTotals=async (continent,next)=>{
+    try {
+        return _.map(await continentTotals(continent, next), _.partialRight(_.pick, ['totalConfirmed', 'totalRecoveries', 'totalDeaths']))
+    }catch (e) {
+        next(e);
+    }
+
+}
 
 exports.showContinents=catchAsync(async (req,res,next)=>{
+    const afrTotals=await displayTotals(Africa,next);
+    const asiaTotals=await displayTotals(Asia,next);
+    const euroTotals=await displayTotals(Europe,next);
+    const northAmericaTotals=await displayTotals(NorthAmerica,next);
+    const southAmericaTotals=await displayTotals(SouthAmerica,next);
+    const oceaniaTotals=await displayTotals(Oceania,next);
 
-    const africaData= await Country.aggregate([
-        {$match:{country:Africa}},
-        {$group:{_id:'Africa', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
-    ]);
-    const euroData= await Country.aggregate([
-        {$match:{country:Europe}},
-        {$group:{_id:'Europe', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
-    ]);
-    const asiaData= await Country.aggregate([
-        {$match:{country:Asia}},
-        {$group:{_id:'Asia', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
-    ]);
-    const nAData= await Country.aggregate([
-        {$match:{country:NorthAmerica}},
-        {$group:{_id:'North America', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
-    ]);
-    const sAData= await Country.aggregate([
-        {$match:{country:SouthAmerica}},
-        {$group:{_id:'South America', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
-    ]);
-    const oceaniaData= await Country.aggregate([
-        {$match:{country:Oceania}},
-        {$group:{_id:'Oceania', totalConfirmed: {$sum:'$totalConfirmed'}, totalRecoveries: {$sum:'$totalRecovered'}, totalDeaths: {$sum:'$totalDeaths'},}}
-    ]);
+    // console.log(afrTotals)
     res.status(200).json({
         status:'success',
         results:6,
         data:{
             continents:[
-                {Continent:'Africa', Slug:'africa', CamelCase:'africa',totals:africaData},
-                {Continent:'Asia', Slug:'asia', CamelCase:'asia',totals:asiaData},
-                {Continent:'Europe', Slug:'europe', CamelCase:'europe',totals:euroData},
-                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica',totals:nAData},
-                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica',totals:sAData},
-                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania',totals:oceaniaData},
+                {Continent:'Africa', Slug:'africa', CamelCase:'africa',totals:afrTotals},
+                {Continent:'Asia', Slug:'asia', CamelCase:'asia',totals:asiaTotals},
+                {Continent:'Europe', Slug:'europe', CamelCase:'europe',totals:euroTotals},
+                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica',totals:northAmericaTotals},
+                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica',totals:southAmericaTotals},
+                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania',totals:oceaniaTotals},
             ]
         }
     })
