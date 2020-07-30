@@ -29,12 +29,12 @@ app.use(xss())
 app.use(hpp())
 
 //ROUTES
-app.use('/api/historical',historical);
-app.use('/api/globalStatistics',global);
-app.use('/api/countryData',countryData);
-app.use('/api/barData',barData);
-app.use('/api/continents',continents);
-app.use('/api/countries',allCountries);
+app.use('/historical',historical);
+app.use('/globalStatistics',global);
+app.use('/countryData',countryData);
+app.use('/barData',barData);
+app.use('/continents',continents);
+app.use('/countries',allCountries);
 
 app.all('*',(req,res,next)=>{
     next(new ErrorHandler(`Cannot find ${req.originalUrl} on this server!`,404))

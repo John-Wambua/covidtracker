@@ -40,13 +40,8 @@ const displayTotals=async (continent,next)=>{
 
 }
 
-exports.showContinents=catchAsync(async (req,res,next)=>{
-    const afrTotals=await displayTotals(Africa,next);
-    const asiaTotals=await displayTotals(Asia,next);
-    const euroTotals=await displayTotals(Europe,next);
-    const northAmericaTotals=await displayTotals(NorthAmerica,next);
-    const southAmericaTotals=await displayTotals(SouthAmerica,next);
-    const oceaniaTotals=await displayTotals(Oceania,next);
+exports.showContinents=(req,res,next)=>{
+
 
     // console.log(afrTotals)
     res.status(200).json({
@@ -63,19 +58,28 @@ exports.showContinents=catchAsync(async (req,res,next)=>{
             ]
         }
     })
-})
-exports.displayContinentData=(req,res,next)=>{
+}
+exports.displayContinentData=catchAsync(async (req,res,next)=>{
+
+    const afrTotals=await displayTotals(Africa,next);
+    const asiaTotals=await displayTotals(Asia,next);
+    const euroTotals=await displayTotals(Europe,next);
+    const northAmericaTotals=await displayTotals(NorthAmerica,next);
+    const southAmericaTotals=await displayTotals(SouthAmerica,next);
+    const oceaniaTotals=await displayTotals(Oceania,next);
+
 
     const features=new ApiFeatures(Country.find(),req.query)
     const continent=_.camelCase(req.params.continent);
 
+    let totals;
     let input;
-    if (continent==='africa') input=Africa;
-    else if (continent==='europe') input=Europe;
-    else if (continent==='asia') input=Asia;
-    else if (continent==='northAmerica') input=NorthAmerica;
-    else if (continent==='southAmerica') input=SouthAmerica;
-    else if (continent==='oceania') input=Oceania;
+    if (continent==='africa'){input=Africa;totals=afrTotals}
+    else if (continent==='europe') {input = Europe; totals=euroTotals}
+    else if (continent==='asia') {input=Asia; totals=asiaTotals}
+    else if (continent==='northAmerica') {input=NorthAmerica; totals=northAmericaTotals}
+    else if (continent==='southAmerica'){ input=SouthAmerica;totals=southAmericaTotals}
+    else if (continent==='oceania') {input=Oceania;totals=oceaniaTotals}
     else {
         return next(new ErrorHandler(new Error('Continent Not found'),404));
     }
@@ -92,9 +96,10 @@ exports.displayContinentData=(req,res,next)=>{
             status:"success",
             results:countries.length,
             continent:_.upperCase(req.params.continent),
+            totals:totals[0],
             data:{
                 countries
             }
         })
     });
-}
+})
