@@ -1,5 +1,7 @@
 const {Country}=require('../models/Country')
 const ApiFeatures=require('../utils/apiFeatures')
+const ErrorHandler=require('../utils/errorHandler')
+const catchAsync=require('../utils/catchAsync')
 const _=require('lodash')
 // const update=require('../utils/updateDB')
 
@@ -23,40 +25,13 @@ exports.getCountriesData=(req,res,next)=>{
         })
     });
 }
-exports.monthlyStats=(req,res,next)=>{
-    const year=req.params.year;
-    Country.aggregate([
-        {
-            $match: {
-                totalConfirmed: {
-                    $gte:10000
-                }
 
-            }
-        },
-        {
-            $group:{
-                _id: {
-                    month:{$substr:['$date',5,2]}
-                },
-                totalCases: {$sum:'$totalConfirmed'},
-                totalRecoveries: {$sum:'$totalRecovered'},
-                totalDeaths: {$sum:'$totalDeaths'},
-            }
-        },
-        {
-            $sort:{totalCases: -1}
-        }
+exports.getSingleCountry = catchAsync(async (req,res,next)=>{
+    const country = await Country.findOne({country:_.upperFirst(req.params.country)})
+    if (!country) return next(new ErrorHandler('The country does not exist or input format is incorrect',404))
+    res.status(200).json({
+        status:'success',
+        country:_.pick(country,['country', 'totalConfirmed', 'totalDeaths', 'totalRecovered', 'deathRate','recoveryRate','date'])
+    })
 
-    ]).exec((err,stats)=>{
-        if (err) return next(err)
-        if (!stats) return res.send('No tours found')
-        res.status(200).json({
-            status:'success',
-            results:stats.length,
-            data:{
-                stats
-            }
-        })
-    });
-}
+})

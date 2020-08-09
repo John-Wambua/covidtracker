@@ -49,12 +49,12 @@ exports.showContinents=(req,res,next)=>{
         results:6,
         data:{
             continents:[
-                {Continent:'Africa', Slug:'africa', CamelCase:'africa',totals:afrTotals},
-                {Continent:'Asia', Slug:'asia', CamelCase:'asia',totals:asiaTotals},
-                {Continent:'Europe', Slug:'europe', CamelCase:'europe',totals:euroTotals},
-                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica',totals:northAmericaTotals},
-                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica',totals:southAmericaTotals},
-                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania',totals:oceaniaTotals},
+                {Continent:'Africa', Slug:'africa', CamelCase:'africa'},
+                {Continent:'Asia', Slug:'asia', CamelCase:'asia',},
+                {Continent:'Europe', Slug:'europe', CamelCase:'europe',},
+                {Continent:'North America', Slug:'north-america', CamelCase:'northAmerica'},
+                {Continent:'South America', Slug:'south-america', CamelCase:'southAmerica'},
+                {Continent:'Oceania', Slug:'oceania', CamelCase:'oceania'},
             ]
         }
     })

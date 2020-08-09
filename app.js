@@ -11,6 +11,7 @@ const historical=require('./routes/historicalData');
 const global=require('./routes/globalStats');
 const countryData=require('./routes/countriesData');
 const barData=require('./routes/barData');
+const home=require('./routes/home');
 const continents=require('./routes/continents');
 const allCountries=require('./routes/countries');
 
@@ -29,10 +30,11 @@ app.use(xss())
 app.use(hpp())
 
 //ROUTES
+app.use('/',home)
 app.use('/historical',historical);
-app.use('/globalStatistics',global);
-app.use('/countryData',countryData);
-app.use('/barData',barData);
+app.use('/summary',global);
+app.use('/country-data',countryData);
+app.use('/east-africa-data',barData);
 app.use('/continents',continents);
 app.use('/countries',allCountries);
 
